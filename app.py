@@ -4,15 +4,7 @@ import numpy as np
 import joblib
 
 # Load the trained model
-# Try loading model and preprocessing artifacts from common filenames saved in the notebook
-try:
-    model = joblib.load('crop_yield_model.pkl')
-except Exception:
-    try:
-        model = joblib.load('yield_model.pkl')
-    except Exception:
-        model = joblib.load('model.pkl')
-
+model = joblib.load('crop_yield_model.pkl')
 preprocessor=joblib.load('preprocesser.pkl')
 
 st.title('Crop Yield Prediction')
