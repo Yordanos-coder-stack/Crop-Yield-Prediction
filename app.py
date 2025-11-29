@@ -1,10 +1,29 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
 
 # Load the trained model
-model = joblib.load('crop_yield_model.pkl')
+# joblib may be missing in the deployed environment; import it safely and show a friendly Streamlit message if absent.
+try:
+    import joblib
+except Exception:
+    joblib = None
+
+# If joblib is not available, show an actionable error and stop the app gracefully.
+if joblib is None:
+    st.title('Crop Yield Prediction')
+    st.error("Required package 'joblib' is not installed in this environment. Add 'joblib' to your requirements.txt and redeploy the app.")
+    st.info("Quick fix: add a `requirements.txt` to your repo with at least `joblib` and redeploy.")
+    st.stop()
+
+# Load the trained model (attempt several common filenames). Do not raise on import — handle missing artifacts at runtime.
+model = None
+for fname in ('crop_yield_model.pkl', 'yield_model.pkl', 'model.pkl'):
+    try:
+        model = joblib.load(fname)
+        break
+    except Exception:
+        model = None
 preprocessor=joblib.load('preprocesser.pkl')
 
 st.title('Crop Yield Prediction')
